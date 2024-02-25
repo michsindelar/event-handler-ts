@@ -1,0 +1,25 @@
+{
+  "name": "event-handler-ts",
+  "version": "1.0.0",
+  "description": "TypeScript event handler implementation.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michsindelar/event-handler-ts.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --expose-gc ./node_modules/.bin/jest --runInBand"
+  },
+  "author": "Michal Sindelar",
+  "files": [
+    "dist/*"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  }
+}
