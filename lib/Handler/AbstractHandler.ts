@@ -6,23 +6,23 @@ import { isEvent } from './guards';
 import { Event, NonTriggerHandler } from './types';
 
 
-abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
+abstract class AbstractHandler<T extends Event> implements NonTriggerHandler<Event>
 {
-    protected readonly _events = new Set<Event>();
-    protected readonly _listeners = new Set<ListenerInterface<Event>>();
+    protected readonly _events = new Set<T>();
+    protected readonly _listeners = new Set<ListenerInterface<T>>();
 
 
-    get events(): Event[]
+    get events(): T[]
     {
         return [ ...this._events ];
     }
 
-    get listeners(): ListenerInterface<Event>[]
+    get listeners(): ListenerInterface<T>[]
     {
         return [ ...this._listeners ];
     }
 
-    constructor(events: Event[], generateOnEventMethods: boolean = false)
+    constructor(events: T[], generateOnEventMethods: boolean = false)
     {
         if (!Array.isArray(events) || events.length === 0) {
              throw new Error('First argument must be an non-empty array.');
@@ -36,11 +36,15 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
             }
             this._events.add(event);
         }
+
+        Object.defineProperty(this, '_events', { configurable: false, writable: false });
+        Object.defineProperty(this, '_listeners', { configurable: false, writable: false });
+
         if (generateOnEventMethods !== true) {
             return;
         }
-        const methods: { [key: string]: Function } = {};
-        this._events.forEach((event: Event) => {
+        const methods: Record<string, ((callback: Callback, once?: boolean) => Listener<T>) | ((target: Target, callback: AutoDisposeCallback, once?: boolean) => AutoDisposeListener<T>)> = {};
+        this._events.forEach((event: T) => {
             const name: string = this._getOnEventMethodName(event);
             if (name in this) {
                 throw new Error(`The property name "${name}" already exists.`);
@@ -50,7 +54,7 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
         Object.assign(this, methods);
     }
 
-    protected _getOnEventMethodName(event: Event): string
+    protected _getOnEventMethodName(event: T): string
     {
         if (!isEvent(event)) {
             throw new Error('Argument must be of type Event.');
@@ -64,7 +68,7 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
             .join('');
     }
 
-    protected _trigger(event: Event, ...args: any[])
+    protected _trigger(event: T, ...args: any[])
     {
         if (!this.isHandleable(event)) {
             throw new Error('The event is unhandleable.');
@@ -81,12 +85,12 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
         });
     }
 
-    isHandleable(event: Event): boolean
+    isHandleable(event: T): boolean
     {
         return this._events.has(event);
     }
 
-    assign(listener: ListenerInterface<Event>): boolean
+    assign(listener: ListenerInterface<T>): boolean
     {
         if (this.has(listener)) {
             return false;
@@ -98,34 +102,34 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
         return true;
     }
 
-    on(event: Event, callback: Callback, once?: boolean): Listener<Event>;
-    on(event: Event, target: Target, callback: AutoDisposeCallback, once?: boolean): AutoDisposeListener<Event>;
-    on(arg1: Event, arg2: Callback | Target, arg3?: boolean | AutoDisposeCallback, arg4?: boolean): Listener<Event> | AutoDisposeListener<Event>
+    on(event: T, callback: Callback, once?: boolean): Listener<T>;
+    on(event: T, target: Target, callback: AutoDisposeCallback, once?: boolean): AutoDisposeListener<T>;
+    on(arg1: T, arg2: Callback | Target, arg3?: boolean | AutoDisposeCallback, arg4?: boolean): Listener<T> | AutoDisposeListener<T>
     {
         if (!this.isHandleable(arg1)) {
             throw new Error('The event is unhandleable.');
         }
-        let listener: Listener<Event> | AutoDisposeListener<Event>;
+        let listener: Listener<T> | AutoDisposeListener<T>;
         if (isCallback(arg2)) {
             if (arg3 !== undefined && typeof arg3 !== 'boolean') {
                 throw new Error('The once argument is not of the type boolean.');
             }
-            listener = new Listener<Event>(this, arg1, arg2, arg3);
+            listener = new Listener<T>(this, arg1, arg2, arg3);
         } else {
             if (!isAutoDisposeCallback(arg3)) {
                 throw new Error('The callback argument is not of the type AutoDisposeCallback.');
             }
-            listener = new AutoDisposeListener<Event>(this, arg1, arg2, arg3, arg4);
+            listener = new AutoDisposeListener<T>(this, arg1, arg2, arg3, arg4);
         }
         return listener;
     }
 
     off(): void;
-    off(event: Event): void;
-    off(target: Target, event: Event): void;
-    off(arg1?: Target | Event, arg2?: Event): void
+    off(event: T): void;
+    off(target: Target, event?: T): void;
+    off(arg1?: Target | T, arg2?: T): void
     {
-        const event: Event | null = arg2 !== undefined? arg2: (arg1 !== undefined && typeof arg1 !== 'object'? arg1: null);
+        const event: T | null = arg2 !== undefined? arg2: (arg1 !== undefined && typeof arg1 !== 'object'? arg1: null);
         if (event !== null && !this.isHandleable(event)) {
             throw new Error('The event is unhandleable.');
         }
@@ -141,12 +145,12 @@ abstract class AbstractHandler<Event> implements NonTriggerHandler<Event>
         });
     }
 
-    has(listener: ListenerInterface<Event>): boolean
+    has(listener: ListenerInterface<T>): boolean
     {
         return this._listeners.has(listener);
     }
 
-    dispose(listener: ListenerInterface<Event>): void
+    dispose(listener: ListenerInterface<T>): void
     {
         if (!this.has(listener)) {
             return;

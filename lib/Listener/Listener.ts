@@ -4,17 +4,19 @@ import { Callback } from './types';
 import { Event, PlainHandlerInterface } from '../Handler/types';
 
 
-class Listener<Event> extends AbstractListener<Event>
+class Listener<T extends Event> extends AbstractListener<Event>
 {
     protected readonly _callback: Callback;
 
-    constructor(handler: PlainHandlerInterface<Event>, event: Event, callback: Callback, once: boolean = false)
+    constructor(handler: PlainHandlerInterface<T>, event: T, callback: Callback, once: boolean = false)
     {
         if (!isCallback(callback)) {
             throw new Error('The callback argument is not of the type Callback.');
         }
         super(handler, event, once);
+
         this._callback = callback;
+        Object.defineProperty(this, '_callback', { configurable: false, writable: false });
     }
 
     call(...args: any[]): void

@@ -3,17 +3,17 @@ import { ListenerInterface } from '../lib/Listener/types';
 import { Event } from '../lib/Handler/types';
 
 
-class ListenerInterfaceMock<Event> implements ListenerInterface<Event>
+class ListenerInterfaceMock<T extends Event> implements ListenerInterface<Event>
 {
-    readonly event: Event;
+    readonly event: T;
     readonly once: boolean;
 
     private readonly callback: Function | undefined;
-    private readonly handler: PlainHandlerInterface<Event> | undefined;
+    private readonly handler: PlainHandlerInterface<T> | undefined;
 
     private readonly mocks: { call: Function; dispose: Function; };
 
-    constructor(event: Event, once: boolean = false, callback?: Function, handler?: PlainHandlerInterface<Event>, call: Function = () => {}, dispose: Function = () => {})
+    constructor(event: T, once: boolean = false, callback?: Function, handler?: PlainHandlerInterface<T>, call: Function = () => {}, dispose: Function = () => {})
     {
         this.event = event;
         this.once = once;

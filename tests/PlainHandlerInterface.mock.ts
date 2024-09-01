@@ -3,26 +3,26 @@ import { ListenerInterface } from '../lib/Listener/types';
 import { Event } from '../lib/Handler/types';
 
 
-class PlainHandlerInterfaceMock<Event> implements PlainHandlerInterface<Event>
+class PlainHandlerInterfaceMock<T extends Event> implements PlainHandlerInterface<Event>
 {
-    readonly events: Event[];
-    readonly listeners: ListenerInterface<Event>[] = [];
+    readonly events: T[];
+    readonly listeners: ListenerInterface<T>[] = [];
 
     private readonly mocks: { isHandleable: Function; assign: Function; has: Function; dispose: Function; };
 
-    constructor(events: Event[], assign: Function = () => {}, dispose: Function = () => {}, isHandleable: Function = () => {}, has: Function = () => {})
+    constructor(events: T[], assign: Function = () => {}, dispose: Function = () => {}, isHandleable: Function = () => {}, has: Function = () => {})
     {
-        this.events = events.reduce((result: Event[], event: Event) => result.includes(event)? result: [ ...result, event ], []);
+        this.events = events.reduce((result: Event[], event: Event) => result.includes(event)? result: [ ...result, event ], []) as T[];
         this.mocks = { isHandleable, assign, has, dispose };
     }
 
-    isHandleable(event: Event): boolean
+    isHandleable(event: T): boolean
     {
         this.mocks.isHandleable(...arguments);
         return this.events.includes(event);
     }
 
-    assign(listener: ListenerInterface<Event>): boolean
+    assign(listener: ListenerInterface<T>): boolean
     {
         this.mocks.assign(...arguments);
         if (this.listeners.includes(listener)) {
@@ -32,13 +32,13 @@ class PlainHandlerInterfaceMock<Event> implements PlainHandlerInterface<Event>
         return true;
     }
 
-    has(listener: ListenerInterface<Event>): boolean
+    has(listener: ListenerInterface<T>): boolean
     {
         this.mocks.has(...arguments);
         return this.listeners.includes(listener);
     }
 
-    dispose(listener: ListenerInterface<Event>): void
+    dispose(listener: ListenerInterface<T>): void
     {
         this.mocks.dispose(...arguments);
         const index = this.listeners.indexOf(listener);

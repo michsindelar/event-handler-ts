@@ -3,7 +3,7 @@ import PlainHandlerInterfaceMock from './PlainHandlerInterface.mock';
 import AbstractListener from '../lib/Listener/AbstractListener';
 import { Event, PlainHandlerInterface } from '../lib/Handler/types';
 
-class Listener<Event> extends AbstractListener<Event>
+class Listener<T extends Event> extends AbstractListener<Event>
 {
     call(...args: any[]): void
     {}

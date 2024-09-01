@@ -8,7 +8,7 @@ import AutoDisposeListener from '../lib/Listener/AutoDisposeListener';
 import { ListenerInterface, Target } from '../lib/Listener/types';
 import { Event } from '../lib/Handler/types';
 
-class Handler<Event> extends AbstractHandler<Event>
+class Handler<T extends Event> extends AbstractHandler<Event>
 {
 }
 
@@ -35,6 +35,7 @@ test('events', () => {
     handler.events.push('third');
     expect(handler.events.length).toBe(events.length);
 });
+
 
 test('listeners', () => {
     const handler: Handler<Event> = new Handler<Event>(events);

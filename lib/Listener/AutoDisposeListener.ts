@@ -4,7 +4,7 @@ import { isTarget, isAutoDisposeCallback } from './guards';
 import { Target, AutoDisposeCallback } from './types';
 
 
-class AutoDisposeListener<Event> extends AbstractListener<Event>
+class AutoDisposeListener<T extends Event> extends AbstractListener<Event>
 {
     protected readonly _target: WeakRef<object>;
     protected readonly _callback: WeakMap<Target,Function>;
@@ -15,7 +15,7 @@ class AutoDisposeListener<Event> extends AbstractListener<Event>
         return this._target.deref();
     }
 
-    constructor(handler: PlainHandlerInterface<Event>, event: Event, target: Target, callback: AutoDisposeCallback, once: boolean = false)
+    constructor(handler: PlainHandlerInterface<T>, event: T, target: Target, callback: AutoDisposeCallback, once: boolean = false)
     {
         if (!isTarget(target)) {
             throw new Error('The target argument is not of the type Target.');
@@ -34,10 +34,14 @@ class AutoDisposeListener<Event> extends AbstractListener<Event>
 
         this._callback = new WeakMap();
         this._callback.set(target, callback);
+        Object.defineProperty(this, '_callback', { configurable: false, writable: false });
 
         this._registry = new FinalizationRegistry(this.dispose.bind(this));
         this._registry.register(target, undefined, this);
+        Object.defineProperty(this, '_registry', { configurable: false, writable: false });
+
         this._target = new WeakRef(target);
+        Object.defineProperty(this, '_target', { configurable: false, writable: false });
     }
 
     call(...args: any[]): void

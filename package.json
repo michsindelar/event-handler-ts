@@ -1,9 +1,31 @@
 {
   "name": "event-handler-ts",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "TypeScript event handler implementation.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      },
+      "require": {
+        "default": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      }
+    },
+    "./*": {
+      "import": {
+        "default": "./dist/*.js",
+        "types": "./dist/*.d.ts"
+      },
+      "require": {
+        "default": "./dist/*.js",
+        "types": "./dist/*.d.ts"
+      }
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/michsindelar/event-handler-ts.git"

@@ -1,3 +1,5 @@
 import Handler from './Handler/Handler';
+import Listener from './Listener/Listener';
 
-export default Handler;
+
+export { Handler as default, Listener };

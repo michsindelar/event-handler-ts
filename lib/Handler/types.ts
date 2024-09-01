@@ -2,29 +2,30 @@ import Listener from '../Listener/Listener';
 import AutoDisposeListener from '../Listener/AutoDisposeListener';
 import { Target, AutoDisposeCallback, ListenerInterface } from '../Listener/types';
 
+
 export type Event = symbol | string | number;
 
-export interface PlainHandlerInterface<Event>
+export interface PlainHandlerInterface<T extends Event>
 {
-    readonly events: Event[];
-    readonly listeners: ListenerInterface<Event>[];
+    readonly events: T[];
+    readonly listeners: ListenerInterface<T>[];
 
-    isHandleable(event: Event): boolean;
-    assign(listener: ListenerInterface<Event>): boolean;
-    has(listener: ListenerInterface<Event>): boolean;
-    dispose(listener: ListenerInterface<Event>): void;
+    isHandleable(event: T): boolean;
+    assign(listener: ListenerInterface<T>): boolean;
+    has(listener: ListenerInterface<T>): boolean;
+    dispose(listener: ListenerInterface<T>): void;
 }
 
-export interface NonTriggerHandler<Event> extends PlainHandlerInterface<Event>
+export interface NonTriggerHandler<T extends Event> extends PlainHandlerInterface<Event>
 {
-    on(event: Event, callback: Function, once?: boolean): Listener<Event>;
-    on(event: Event, target: Target, callback: AutoDisposeCallback, once?: boolean): AutoDisposeListener<Event>;
+    on(event: T, callback: Function, once?: boolean): Listener<T>;
+    on(event: T, target: Target, callback: AutoDisposeCallback, once?: boolean): AutoDisposeListener<T>;
     off(): void;
-    off(event: Event): void;
-    off(target: Target, event: Event): void;
+    off(event: T): void;
+    off(target: Target, event?: T): void;
 }
 
-export interface HandlerInterface<Event> extends NonTriggerHandler<Event>
+export interface HandlerInterface<T extends Event> extends NonTriggerHandler<Event>
 {
-    trigger(event: Event, ...args: any[]): void;
+    trigger(event: T, ...args: any[]): void;
 }
