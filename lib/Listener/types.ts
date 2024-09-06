@@ -1,7 +1,7 @@
 import { Event } from '../Handler/types';
 
 
-export type Callback = Function;
+export type Callback = (...args: any[]) => void;
 export type Target = object;
 export type AutoDisposeCallback = Callback | keyof Target;
 
