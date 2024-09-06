@@ -1,5 +1,5 @@
+import { isEvent } from 'event-handler-ts/Handler/guards';
 import { expect, test } from '@jest/globals';
-import { isEvent } from '../lib/Handler/guards';
 
 
 test('isEvent', () => {

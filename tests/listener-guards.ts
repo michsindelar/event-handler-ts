@@ -1,5 +1,5 @@
+import { isTarget, isCallback, isAutoDisposeCallback } from 'event-handler-ts/Listener/guards';
 import { expect, test } from '@jest/globals';
-import { isTarget, isCallback, isAutoDisposeCallback } from '../lib/Listener/guards';
 
 
 test('isTarget', () => {

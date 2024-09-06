@@ -1,7 +1,7 @@
+import AbstractListener from 'event-handler-ts/Listener/AbstractListener';
+import { Event, PlainHandlerInterface } from 'event-handler-ts/Handler/types';
 import { jest, expect, test } from '@jest/globals';
 import PlainHandlerInterfaceMock from './PlainHandlerInterface.mock';
-import AbstractListener from '../lib/Listener/AbstractListener';
-import { Event, PlainHandlerInterface } from '../lib/Handler/types';
 
 class Listener<T extends Event> extends AbstractListener<Event>
 {

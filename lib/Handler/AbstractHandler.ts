@@ -1,6 +1,6 @@
 import Listener from '../Listener/Listener';
 import AutoDisposeListener from '../Listener/AutoDisposeListener';
-import { isCallback, isAutoDisposeCallback } from '../Listener/guards';
+import { isTarget, isCallback, isAutoDisposeCallback } from '../Listener/guards';
 import { Target, Callback, AutoDisposeCallback, ListenerInterface } from '../Listener/types';
 import { isEvent } from './guards';
 import { Event, NonTriggerHandler } from './types';
@@ -129,16 +129,16 @@ abstract class AbstractHandler<T extends Event> implements NonTriggerHandler<Eve
     off(target: Target, event?: T): void;
     off(arg1?: Target | T, arg2?: T): void
     {
-        const event: T | null = arg2 !== undefined? arg2: (arg1 !== undefined && typeof arg1 !== 'object'? arg1: null);
+        const event: T | null = arg2 !== undefined? arg2: (arg1 !== undefined && !isTarget(arg1)? arg1: null);
         if (event !== null && !this.isHandleable(event)) {
             throw new Error('The event is unhandleable.');
         }
-        const target: Target | null = typeof arg1 === 'object'? arg1: null;
+        const target: Target | null = isTarget(arg1)? arg1: null;
         this._listeners.forEach((listener) => {
             if (event !== null && listener.event !== event) {
                 return;
             }
-            if (target !== null && listener instanceof AutoDisposeListener && listener.target !== target) {
+            if (target !== null && (!(listener instanceof AutoDisposeListener) || listener.target !== target)) {
                 return;
             }
             listener.dispose();

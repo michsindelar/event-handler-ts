@@ -1,9 +1,9 @@
+import Listener from 'event-handler-ts/Listener/Listener';
+import { Event } from 'event-handler-ts/Handler/types';
+import { ListenerInterface } from 'event-handler-ts/Listener/types';
 import { jest, describe, expect, test } from '@jest/globals';
 import mockFn from './fn.mock';
 import PlainHandlerInterfaceMock from './PlainHandlerInterface.mock';
-import Listener from '../lib/Listener/Listener';
-import { Event } from '../lib/Handler/types';
-import { ListenerInterface } from '../lib/Listener/types';
 
 const events: [ symbol, string, number ] = [ Symbol('first'), 'second', 3 ];
 

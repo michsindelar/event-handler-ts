@@ -1,6 +1,6 @@
-import { PlainHandlerInterface } from '../lib/Handler/types';
-import { ListenerInterface } from '../lib/Listener/types';
-import { Event } from '../lib/Handler/types';
+import { PlainHandlerInterface } from 'event-handler-ts/Handler/types';
+import { ListenerInterface } from 'event-handler-ts/Listener/types';
+import { Event } from 'event-handler-ts/Handler/types';
 
 
 class ListenerInterfaceMock<T extends Event> implements ListenerInterface<Event>

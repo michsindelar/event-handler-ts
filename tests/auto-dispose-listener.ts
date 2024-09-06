@@ -1,8 +1,8 @@
+import AutoDisposeListener from 'event-handler-ts/Listener/AutoDisposeListener';
+import { Event } from 'event-handler-ts/Handler/types';
 import { jest, describe, expect, test } from '@jest/globals';
 import mockFn from './fn.mock';
 import PlainHandlerInterfaceMock from './PlainHandlerInterface.mock';
-import AutoDisposeListener from '../lib/Listener/AutoDisposeListener';
-import { Event } from '../lib/Handler/types';
 import { ListenerInterface, Target, AutoDisposeCallback } from '../lib/Listener/types';
 
 const gc: Function = () => global?.gc !== undefined && global.gc();
